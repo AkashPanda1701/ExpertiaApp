@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Head from 'next/head'
 import Image from 'next/image'
 import { Inter } from '@next/font/google'
@@ -9,10 +9,105 @@ import {
 } from 'react-icons/ai'
 import { useState } from 'react'
 import Link from 'next/link'
+import {  toast } from 'react-toastify';
+
+import { useDispatch, useSelector } from 'react-redux'
+import { signup } from '../redux/auth/action'
+import { CLEAR_AUTH_MESSAGE } from '../redux/auth/actionTypes'
+import { useRouter } from 'next/router'
+
+const initialState = {
+  username: '',
+  email: '',
+  password: '',
+  confirmPassword: ''
+}
 
 function Singup() {
+  const [ formData, setFormData ] = useState(initialState)
   const [showPassword, setShowPassword] = useState(false)
   const [showConPassword, setShowConPassword] = useState(false)
+  
+  const dispatch = useDispatch()
+  const authState = useSelector(state => state.auth)
+  // console.log('authState: ', authState);
+  const router = useRouter()
+
+  useEffect(() => {
+    if(authState.message) {
+      toast(authState.message, {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'colored',
+        type: authState.error ? 'error' : 'success'
+        });
+        dispatch({ type: CLEAR_AUTH_MESSAGE })
+        setFormData(initialState)
+        
+      }
+     
+  }, [authState.message])
+
+  useEffect(() => {
+    if(authState.isAuth){
+      setTimeout(() => {
+      router.push('/')
+      }, 2000)
+    }
+  }, [authState.isAuth])
+
+
+  const handleChange = (e) => {
+    const { name, value } = e.target
+    setFormData({ ...formData, [name]: value })
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    
+    for(let key in formData) {
+      if(formData[key] === '') {
+        toast('Please fill all the fields!', {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'colored',
+          type: 'error'
+          });
+        return
+      }
+    }
+
+    if(formData.password !== formData.confirmPassword) {
+      toast('Password and Confirm Password does not match!', {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'colored',
+        type: 'warning'
+        });
+      return
+    }
+    
+    dispatch(signup({
+      username: formData.username,
+      email: formData.email,
+      password: formData.password
+    }))
+  }
   return (
     <>
      <Head>
@@ -23,23 +118,23 @@ function Singup() {
       </Head>
       <div className='grid grid-cols-1 lg:grid-cols-2 items-center justify-center h-screen p-4'>
 
-      <form className='border-2 mx-auto py-10 px-8 rounded-lg shadow-md max-w-[505px]'>
+      <form className='border-2 mx-auto py-10 px-8 rounded-lg shadow-md max-w-[505px]' onSubmit={handleSubmit}>
       <p className='text-3xl mb-4'>Welcome!</p>
       <h1 className='text-3xl font-semibold mb-4'>Sign up to</h1>
       <label >
         <span >Email</span>
       </label>
-      <input type='text' className='mb-4 p-2 border-2 border-gray-300 rounded-md h-10 w-full' placeholder='Enter your email' />
+      <input type='email' className='mb-4 p-2 border-2 border-gray-300 rounded-md h-10 w-full' placeholder='Enter your email' value={formData.email} onChange={handleChange} name='email'/>
       <label>
         <span >User name</span>
       </label>
-      <input type='text' className='mb-4 p-2 border-2 border-gray-300 rounded-md h-10 w-full'  placeholder='Enter your username'/>
+      <input type='text' className='mb-4 p-2 border-2 border-gray-300 rounded-md h-10 w-full'  placeholder='Enter your username' value={formData.username} onChange={handleChange} name='username'/>
       <label>
         <span >Password</span>
       </label>
       <div className='relative'>
 
-      <input type={showPassword ? 'text':'password'} className='mb-4 p-2 border-2 border-gray-300 rounded-md h-10 w-full'   placeholder='Enter your password'/>
+      <input type={showPassword ? 'text':'password'} className='mb-4 p-2 border-2 border-gray-300 rounded-md h-10 w-full'   placeholder='Enter your password' value={formData.password} onChange={handleChange} name='password'/>
       
       {
         showPassword ? <AiFillEye
@@ -55,7 +150,7 @@ function Singup() {
         <span >Confirm Password</span>
       </label>
       <div className='relative'>
-      <input type={showConPassword ? 'text':'password'} className='mb-4 p-2 border-2 border-gray-300 rounded-md h-10 w-full'   placeholder='Confirm your password'/>
+      <input type={showConPassword ? 'text':'password'} className='mb-4 p-2 border-2 border-gray-300 rounded-md h-10 w-full'   placeholder='Confirm your password' value={formData.confirmPassword} onChange={handleChange} name='confirmPassword'/>
       {
         showConPassword ? <AiFillEye
         onClick={()=>{
