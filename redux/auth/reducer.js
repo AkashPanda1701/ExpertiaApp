@@ -5,7 +5,8 @@ import {
     AUTH_LOGIN_LOADING,
     AUTH_LOGIN_SUCCESS,
     AUTH_LOGIN_ERROR,
-    CLEAR_AUTH_MESSAGE
+    CLEAR_AUTH_MESSAGE,
+    AUTH_LOGOUT
 
 } from './actionTypes';
 
@@ -77,6 +78,15 @@ export const authReducer = (state = initialState, { type, payload }) => {
                     loading: false,
                     error: false,
                     message: '',
+                };
+            case AUTH_LOGOUT:
+                return {
+                    ...state,
+                    loading: false,
+                    error: false,
+                    message: '',
+                    user: null,
+                    isAuth: false,
                 };
         default:
             return state;

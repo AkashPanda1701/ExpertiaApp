@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { CLEAR_AUTH_MESSAGE } from '../redux/auth/actionTypes'
 import { login } from '../redux/auth/action'
 import { useRouter } from 'next/router'
+import { signIn } from 'next-auth/react'
 
 const initialState = {
   username: '',
@@ -25,6 +26,7 @@ function Login() {
   const router = useRouter()
   const dispatch = useDispatch()
   const authState = useSelector(state => state.auth)
+  // console.log('authState: ', authState);
 
   useEffect(() => {
     if(authState.message) {
@@ -39,6 +41,12 @@ function Login() {
         theme: 'colored',
         type: authState.error ? 'error' : 'success'
         });
+        if(authState.message==='User logged in successfully')
+        {
+          setTimeout(() => {
+          signIn('credentials', {username:formData.username, password:formData.password, callbackUrl: '/'})
+          }, 2000)
+        }
         dispatch({ type: CLEAR_AUTH_MESSAGE })
         setFormData(initialState)
     }
@@ -104,7 +112,7 @@ function Login() {
       </label>
       <div className='relative'>
 
-      <input type={showPassword ? 'text':'password'} className='mb-4 p-2 border-2 border-gray-300 rounded-md h-10 w-full'   placeholder='Enter your password' name='password' value={formData.password} onChange={handleChange}/>
+      <input type={showPassword ? 'text':'password'} className=' p-2 border-2 border-gray-300 rounded-md h-10 w-full'   placeholder='Enter your password' name='password' value={formData.password} onChange={handleChange}/>
       
       {
         showPassword ? <AiFillEye
@@ -116,6 +124,7 @@ function Login() {
         }} size={'22'} className='absolute top-2 right-3 cursor-pointer'/>
       }
       </div>
+      <p className='text-xs ml-2 text-gray-500 mb-4'>At least 6 characters including (!,@,#,$,%,^,&,*)</p>
         <div className='flex justify-between items-center'>
         <div className='flex items-center'>
         <input type='checkbox' className='mr-2'/>

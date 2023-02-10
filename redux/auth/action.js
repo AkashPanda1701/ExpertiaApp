@@ -16,7 +16,7 @@ export const signup = (user) => async (dispatch) => {
             type: AUTH_SIGNUP_LOADING,
         });
         const res = await axios.post('/api/user/signup', user);
-        // console.log('res: ', res);
+        console.log('res: ', res);
         dispatch({
             type: AUTH_SIGNUP_SUCCESS,
             payload:{
@@ -26,7 +26,7 @@ export const signup = (user) => async (dispatch) => {
             }
         });
     } catch (error) {
-        // console.log('error: ', error);
+        console.log('error: ', error);
         dispatch({
             type: AUTH_SIGNUP_ERROR,
             payload: {

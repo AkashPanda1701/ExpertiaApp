@@ -10,3 +10,4 @@ export const AUTH_LOGIN_ERROR = "AUTH_LOGIN_ERROR";
 
 export const CLEAR_AUTH_MESSAGE = "CLEAR_AUTH_MESSAGE";
 
+export const AUTH_LOGOUT = "AUTH_LOGOUT";

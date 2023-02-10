@@ -15,6 +15,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { signup } from '../redux/auth/action'
 import { CLEAR_AUTH_MESSAGE } from '../redux/auth/actionTypes'
 import { useRouter } from 'next/router'
+import { signIn } from 'next-auth/react'
 
 const initialState = {
   username: '',
@@ -28,6 +29,7 @@ function Singup() {
   const [showPassword, setShowPassword] = useState(false)
   const [showConPassword, setShowConPassword] = useState(false)
   
+
   const dispatch = useDispatch()
   const authState = useSelector(state => state.auth)
   // console.log('authState: ', authState);
@@ -46,6 +48,12 @@ function Singup() {
         theme: 'colored',
         type: authState.error ? 'error' : 'success'
         });
+        if(authState.message==='User created successfully')
+        {
+          setTimeout(() => {
+          signIn('credentials', {username:formData.username, password:formData.password, callbackUrl: '/'})
+          }, 2000)
+        }
         dispatch({ type: CLEAR_AUTH_MESSAGE })
         setFormData(initialState)
         
@@ -55,9 +63,8 @@ function Singup() {
 
   useEffect(() => {
     if(authState.isAuth){
-      setTimeout(() => {
+      
       router.push('/')
-      }, 2000)
     }
   }, [authState.isAuth])
 
@@ -86,7 +93,38 @@ function Singup() {
         return
       }
     }
+if(formData.password.length<6){
+  toast('Password should be atleast 6 characters', {
+    position: "top-center",
+    autoClose: 2000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: 'colored',
+    type: 'warning'
+    });
+  return
+}
 
+    if(!formData.password.match(/([!,%,&,@,#,$,^,*])/)){
+      toast('Password must include !, @, #, $, %, ^, &, *', {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'colored',
+        type: 'warning'
+        });
+      return
+    }
+
+
+    
     if(formData.password !== formData.confirmPassword) {
       toast('Password and Confirm Password does not match!', {
         position: "top-center",
@@ -134,7 +172,7 @@ function Singup() {
       </label>
       <div className='relative'>
 
-      <input type={showPassword ? 'text':'password'} className='mb-4 p-2 border-2 border-gray-300 rounded-md h-10 w-full'   placeholder='Enter your password' value={formData.password} onChange={handleChange} name='password'/>
+      <input type={showPassword ? 'text':'password'} className=' p-2 border-2 border-gray-300 rounded-md h-10 w-full'   placeholder='Enter your password' value={formData.password} onChange={handleChange} name='password'/>
       
       {
         showPassword ? <AiFillEye
@@ -146,6 +184,7 @@ function Singup() {
         }} size={'22'} className='absolute top-2 right-3 cursor-pointer'/>
       }
       </div>
+      <p className='text-xs ml-2 text-gray-500 mb-4'>At least 6 characters including (!,@,#,$,%,^,&,*)</p>
       <label>
         <span >Confirm Password</span>
       </label>
