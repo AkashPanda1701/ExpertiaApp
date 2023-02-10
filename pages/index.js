@@ -82,7 +82,7 @@ export default function Home({alltasks}) {
 
       <div className='border-2  mx-auto py-8 px-7 rounded-lg shadow-md  max-w-[505px]' >
       <p className='text-3xl mb-8'>Hello!</p>
-      <h1 className='text-3xl font-semibold mb-8'>{session.user?.username}</h1>
+      <h1 className='text-3xl font-semibold mb-8'>{session?.user?.username}</h1>
       <p className='text-xl mb-8'>Good to see you here!</p>
       <p className='text-[18px] font-bold mb-8'>Tasks for {new Date().toDateString()} :</p>
 
