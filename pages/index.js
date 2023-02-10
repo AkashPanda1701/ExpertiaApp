@@ -161,7 +161,7 @@ export default function Home({alltasks}) {
 export async function getServerSideProps(context) {
   const { req, res } = context;
   const session = await getSession({ req });
-  // console.log('session: ', session);
+  console.log('session: ', session);
   let response=await fetch('https://expertia-taskmanagement.netlify.app/api/user/task', {
     method: 'GET',
     headers: {
