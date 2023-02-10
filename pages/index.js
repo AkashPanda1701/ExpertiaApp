@@ -162,7 +162,7 @@ export async function getServerSideProps(context) {
   const { req, res } = context;
   const session = await getSession({ req });
   console.log('session: ', session);
-  let response=await fetch('https://expertia-taskmanagement.netlify.app/api/user/task', {
+  let response=await fetch('https://akashkumar-fw20-1148.vercel.app/api/user/task', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
