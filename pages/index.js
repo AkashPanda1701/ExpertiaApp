@@ -17,7 +17,7 @@ import {toast} from 'react-toastify'
 import { useRouter } from 'next/router'
 
 export default function Home({alltasks}) {
-  const { data: session } = useSession()
+  const { data: session ,status} = useSession()
   const taskState = useSelector(state => state.task)
   // console.log('taskState: ', taskState);
   const authState = useSelector(state => state.auth)
@@ -28,10 +28,10 @@ export default function Home({alltasks}) {
  const router = useRouter()
 
  useEffect(() => {
-  if(!authState.isAuth){
+  if(status!=='authenticated'  && status !== 'loading'){
     router.push('/signup')
   }
-}, [authState.isAuth])
+}, [status])
 
 
  useEffect(() => {

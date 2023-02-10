@@ -14,7 +14,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { CLEAR_AUTH_MESSAGE } from '../redux/auth/actionTypes'
 import { login } from '../redux/auth/action'
 import { useRouter } from 'next/router'
-import { signIn } from 'next-auth/react'
+import { signIn, useSession } from 'next-auth/react'
 
 const initialState = {
   username: '',
@@ -27,6 +27,13 @@ function Login() {
   const dispatch = useDispatch()
   const authState = useSelector(state => state.auth)
   // console.log('authState: ', authState);
+  const {status}=useSession()
+  useEffect(() => {
+    if(status==='authenticated'  && status !== 'loading'){
+      router.push('/')
+    }
+  }, [status])
+
 
   useEffect(() => {
     if(authState.message) {
@@ -53,13 +60,6 @@ function Login() {
   }, [authState.message])
 
   
-  useEffect(() => {
-    if(authState.isAuth){
-      setTimeout(() => {
-      router.push('/')
-      }, 2000)
-    }
-  }, [authState.isAuth])
 
 
   const handleChange = (e) => {

@@ -15,7 +15,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { signup } from '../redux/auth/action'
 import { CLEAR_AUTH_MESSAGE } from '../redux/auth/actionTypes'
 import { useRouter } from 'next/router'
-import { signIn } from 'next-auth/react'
+import { signIn, useSession } from 'next-auth/react'
 
 const initialState = {
   username: '',
@@ -34,6 +34,13 @@ function Singup() {
   const authState = useSelector(state => state.auth)
   // console.log('authState: ', authState);
   const router = useRouter()
+  const {status}=useSession()
+
+  useEffect(() => {
+    if(status==='authenticated' && status !== 'loading'){
+      router.push('/')
+    }
+  }, [status])
 
   useEffect(() => {
     if(authState.message) {
@@ -61,12 +68,6 @@ function Singup() {
      
   }, [authState.message])
 
-  useEffect(() => {
-    if(authState.isAuth){
-      
-      router.push('/')
-    }
-  }, [authState.isAuth])
 
 
   const handleChange = (e) => {
