@@ -19,7 +19,7 @@ import { useRouter } from 'next/router'
 export default function Home({alltasks}) {
   const { data: session } = useSession()
   const taskState = useSelector(state => state.task)
-  console.log('taskState: ', taskState);
+  // console.log('taskState: ', taskState);
   const authState = useSelector(state => state.auth)
   // console.log('authState: ', authState);
  const dispatch = useDispatch()
@@ -161,8 +161,8 @@ export default function Home({alltasks}) {
 export async function getServerSideProps(context) {
   const { req, res } = context;
   const session = await getSession({ req });
-  console.log('session: ', session);
-  let response=await fetch('http://localhost:3000/api/user/task', {
+  // console.log('session: ', session);
+  let response=await fetch('https://expertia-taskmanagement.netlify.app/api/user/task', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -170,7 +170,7 @@ export async function getServerSideProps(context) {
     }
   })
   let data=await response.json()
-  console.log('data: ', data);
+  // console.log('data: ', data);
  
   return {
     props: {
